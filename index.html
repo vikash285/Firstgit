@@ -18,7 +18,12 @@
                 localStorage.setItem('name',name);
                 localStorage.setItem('email',email);
                 localStorage.setItem('password',password);
-                console.log(1);
+                let obj={
+                    name,
+                    email,
+                    password
+                }
+                localStorage.setItem('userDetails',JSON.stringify(obj));
             }
         </script>
     </body>
