@@ -1,0 +1,29 @@
+<head>
+    <body>
+        <h1>Appoinment Booking App</h1>
+        <form onsubmit="toLocalStorage(event)">
+            <input type="text" name="username" required>
+            <input type="emial" name="emailId" required>
+            <button>Submit</button>
+        </form>
+        <ul id="listOfUsers"></ul>
+        <script>
+            function toLocalStorage(event) {
+                event.preventDefault();
+                const name=event.target.username.value;
+                const email=event.target.emailId.value;
+                let obj = {
+                    name,
+                    email
+                }
+                localStorage.setItem(`userDetails${obj.email}`,JSON.stringify(obj));
+                showNewUser(obj);
+            }
+            function showNewUser(user){
+                const parentNode=document.getElementById('listOfUsers');
+                childHTML=`<li> ${user.name} - ${user.email} </li>`;
+                parentNode.innerHTML=parentNode.innerHTML+childHTML;
+            }
+        </script>
+    </body>
+</head>
