@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" 
+    crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <form action="#" onsubmit="signup(event)">
+            <label for="name" class="form-label">Choose expenseamount:</label>
+            <input type="number" class="form-control" id="amount" name="amount" required/>
+            <label for="name" class="form-label" >Choose description:</label>
+            <input type="text" class="form-control" id="expense" name="expense" required/>
+            <label for="categories" class="form-label">Choose a category:</label>
+            <select name="category" id="categories" class="form-control">
+                <option value="movies">movies</option>
+                <option value="fuel">fuel</option>
+                <option value="food">food</option>
+                <option value="travel">travel</option>
+            </select>
+            <button>Add Expense</button>
+        </form>
+        <ul id="listOfUsers"></ul>
+        <script>
+            function signup(event){
+                event.preventDefault();
+                const amount=event.target.amount.value;
+                const des=event.target.expense.value;
+                const category=event.target.category.value;
+
+                const obj={
+                    amount,
+                    des,
+                    category
+                }
+                localStorage.setItem(obj.des,JSON.
+                stringify(obj));
+                showNewUserOnScreen(obj);
+            }
+
+            Object.keys(localStorage).forEach((key)=>{
+                  const stringifiedDetails=localStorage.getItem(key)
+                  const destringifiedDetails=JSON.parse(stringifiedDetails)
+                    showNewUserOnScreen(destringifiedDetails)
+                });
+            function showNewUserOnScreen(user){
+                
+                document.getElementById('expense').value=''
+                document.getElementById('amount').value=''
+                document.getElementById('categories').value=''
+
+                const parentNode=document.getElementById('listOfUsers')
+                const childHTML=`<li id=${user.des}> ${user.amount} - ${user.des}
+                    - ${user.category} 
+                    <button onclick=deleteUser('${user.des}')>Delete</button>
+                    <button onclick=editUser('${user.des}','${user.amount}','${user.category}')>Edit</button>
+                    </li>`
+                parentNode.innerHTML =parentNode.innerHTML+childHTML
+            }
+            function editUser(description,amount,category){
+                document.getElementById('expense').value=description
+                document.getElementById('amount').value=amount
+                document.getElementById('categories').value=category
+                deleteUser(description)
+            }
+            function deleteUser(del){
+                localStorage.removeItem(del)
+                removeFromScreen(del)
+            }
+            function removeFromScreen(screen){
+                const parentNode=document.getElementById('listOfUsers')
+                const childToBeRemoved=document.getElementById(screen)
+                parentNode.removeChild(childToBeRemoved)
+            }
+        </script>
+    </div>
+</body>
+</html>
