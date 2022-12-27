@@ -40,15 +40,14 @@
 
         const user={
             name:'vikash',
-            lastActivity:new Date().getTime()
+            lastActivity:new Date()
         }
         function userLastActivity(){
-            return new Promise((resolve,reject)=>{
+            return new Promise((resolve,reject)=>
             setTimeout(() => {
                user.lastActivity=new Date().getTime()
                 resolve(user.lastActivity)
-            },1000)
-            })
+            },1000))
         }
         function deletePost(){
             return new Promise((resolve,reject)=>
@@ -56,14 +55,12 @@
               resolve(posts.pop())
             },1000))
         }
-        createPost({title:'Post two', body:'This is post two'})
-        .then(()=>{
-        Promise.all([createPost,userLastActivity]).then(()=>console.log(posts,user.lastActivity))
+        
+        Promise.all([createPost(),userLastActivity()]).then(()=>console.log(posts,user.lastActivity))
         .then(()=>{
             deletePost()
         .then(()=>console.log(posts))
         })
-    })
     </script>
 </body>
 </html>
