@@ -24,8 +24,8 @@
             },1000)
         }
         
-        function createPost(post){
-           return new Promise((resolve,reject)=>{
+        async function createPost(post){
+          const creatingPost=await new Promise((resolve,reject)=>{
             setTimeout(()=>{
                 posts.push({...post,createdAt:new Date().getTime()})
                 const error=false
@@ -36,6 +36,7 @@
                 }
             },2000)
         })
+        return creatingPost
         }
 
         const user={
@@ -49,11 +50,12 @@
                 resolve(user.lastActivity)
             },1000))
         }
-        function deletePost(){
-            return new Promise((resolve,reject)=>
+        async function deletePost(){
+           const deletingPost=await new Promise((resolve,reject)=>
             setTimeout(()=>{
               resolve(posts.pop())
             },1000))
+            return deletingPost
         }
         
         Promise.all([createPost(),userLastActivity()]).then(()=>console.log(posts,user.lastActivity))
