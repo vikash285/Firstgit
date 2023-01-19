@@ -64,9 +64,9 @@
                 }
 
                 const parentNode=document.getElementById('listOfUsers');
-                const childHTML=`<li id=${user.email}> ${user.name} - ${user.email} 
+                const childHTML=`<li id=${user._id}> ${user.name} - ${user.email} 
                     <button onclick=editUserDetails('${user.email}','${user.name}')>Edit</button>
-                    <button onclick=deleteUser('${user.email}')>Delete User</button>
+                    <button onclick=deleteUser('${user._id}')>Delete User</button>
                     </li>`
                 parentNode.innerHTML=parentNode.innerHTML+childHTML;
             }
@@ -77,15 +77,22 @@
                 deleteUser(emailId)
             }
 
-            function deleteUser(emailId){
-                console.log(emailId);
-                localStorage.removeItem(emailId);
-                removeUserFromScreen(emailId);
+            function deleteUser(userId){
+                axios.delete(`https://crudcrud.com/api/a1e43c764a10447b8d9bef245028516b/appoinmentData/${userId}`)
+                .then((res)=>{
+                    removeUserFromScreen(userId);
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+                // console.log(emailId);
+                // localStorage.removeItem(emailId);
+                // removeUserFromScreen(emailId);
             }
-            function removeUserFromScreen(emailId){
+            function removeUserFromScreen(userId){
                 
                 const parentNode=document.getElementById('listOfUsers');
-                const childToBeDeleted=document.getElementById(emailId);
+                const childToBeDeleted=document.getElementById(userId);
                 if(childToBeDeleted){
                     parentNode.removeChild(childToBeDeleted)
                 }
