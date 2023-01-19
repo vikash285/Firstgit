@@ -33,15 +33,26 @@
             }
 
              window.addEventListener("DOMContentLoaded",()=>{
-                 const localStorageObj=localStorage;
-                 const localStorageKeys=Object.keys(localStorageObj);
+                    axios.get("https://crudcrud.com/api/a1e43c764a10447b8d9bef245028516b/appoinmentData")
+                    .then((res)=>{
+                        for(var i=0;i<res.data.length;i++){
+                            showNewUser(res.data[i]);
+                        }
+                        console.log(res);
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })    
 
-                 for ( var i=0;i<localStorageKeys.length;i++){
-                    const key=localStorageKeys[i];
-                    const userDetailsString=localStorageObj[key];
-                    const userDetailsObj=JSON.parse(userDetailsString);
-                    showNewUser(userDetailsObj);
-                 }
+                //  const localStorageObj=localStorage;
+                //  const localStorageKeys=Object.keys(localStorageObj);
+
+                //  for ( var i=0;i<localStorageKeys.length;i++){
+                //     const key=localStorageKeys[i];
+                //     const userDetailsString=localStorageObj[key];
+                //     const userDetailsObj=JSON.parse(userDetailsString);
+                //     showNewUser(userDetailsObj);
+            //      }
              })
 
             function showNewUser(user){
