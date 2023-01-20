@@ -1,0 +1,90 @@
+</head>
+<body>
+        <form onsubmit="signup(event)">
+            <label for="name" class="form-label">Choose Price:</label>
+            <input type="number" class="form-control" id="amount" name="amount" required/>
+            <label for="name" class="form-label" >Choose Dish:</label>
+            <input type="text" class="form-control" id="expense" name="expense" required/>
+            <label for="categories" class="form-label">Choose a Table:</label>
+            <select name="category" id="categories" class="form-control">
+                <option value="Table 1">Table 1</option>
+                <option value="Table 2">Table 2</option>
+                <option value="Table 3">Table 3</option>
+            </select>
+            <button>Add to bill</button>
+        </form>
+        <ul id="listOfUsers"><h3>Orders</h3></ul>
+            <ul id="Table 1"><h4>Table 1</h4></ul>
+            <ul id="Table 2"><h4>Table 2</h4></ul>
+            <ul id="Table 3"><h4>Table 3</h4></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
+        <script>
+            function signup(event){
+                event.preventDefault();
+                const amount=event.target.amount.value;
+                const des=event.target.expense.value;
+                const category=event.target.category.value;
+
+                const obj={
+                    amount,
+                    des,
+                    category
+                }
+                axios.post("https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData",obj)
+                .then((res)=>{
+                    showNewUserOnScreen(res.data);
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+                // localStorage.setItem(obj.des,JSON.
+                // stringify(obj));
+                
+            }
+
+            window.addEventListener("DOMContentLoaded",()=>{
+                    axios.get("https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData")
+                    .then((res)=>{
+                        for(var i=0;i<res.data.length;i++){
+                            showNewUserOnScreen(res.data[i]);
+                        }
+                        console.log(res);
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+                })
+
+            function showNewUserOnScreen(user){
+                
+                document.getElementById('expense').value=''
+                document.getElementById('amount').value=''
+                document.getElementById('categories').value=''
+
+                const parentNode=document.getElementById(user.category)
+                const childHTML=`<li id=${user._id}> ${user.amount} - ${user.des}
+                    - ${user.category} 
+                    <button onclick=deleteUser('${user._id}')>Delete</button>
+                    </li>`
+                parentNode.innerHTML =parentNode.innerHTML+childHTML
+
+            }
+            
+            function deleteUser(del){
+                axios.delete(`https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData/${del}`)
+                .then((res)=>{
+                    removeFromScreen(del);
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+                // localStorage.removeItem(del)
+            }
+            function removeFromScreen(screen){
+                const parentNode=document.getElementById(screen.category)
+                const childToBeRemoved=document.getElementById(screen)
+                parentNode.removeChild(childToBeRemoved)
+            }
+        </script>
+</body>
+</html>
