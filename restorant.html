@@ -7,16 +7,16 @@
             <input type="text" class="form-control" id="expense" name="expense" required/>
             <label for="categories" class="form-label">Choose a Table:</label>
             <select name="category" id="categories" class="form-control">
-                <option value="Table 1">Table 1</option>
-                <option value="Table 2">Table 2</option>
-                <option value="Table 3">Table 3</option>
+                <option value="Table1">Table1</option>
+                <option value="Table2">Table2</option>
+                <option value="Table3">Table3</option>
             </select>
             <button>Add to bill</button>
         </form>
         <ul id="listOfUsers"><h3>Orders</h3></ul>
-            <ul id="Table 1"><h4>Table 1</h4></ul>
-            <ul id="Table 2"><h4>Table 2</h4></ul>
-            <ul id="Table 3"><h4>Table 3</h4></ul>
+            <ul id="Table1"><h4>Table1</h4></ul>
+            <ul id="Table2"><h4>Table2</h4></ul>
+            <ul id="Table3"><h4>Table3</h4></ul>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
         <script>
             function signup(event){
@@ -30,7 +30,7 @@
                     des,
                     category
                 }
-                axios.post("https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData",obj)
+                axios.post("https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData",obj)
                 .then((res)=>{
                     showNewUserOnScreen(res.data);
                 })
@@ -43,12 +43,11 @@
             }
 
             window.addEventListener("DOMContentLoaded",()=>{
-                    axios.get("https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData")
+                    axios.get("https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData")
                     .then((res)=>{
                         for(var i=0;i<res.data.length;i++){
                             showNewUserOnScreen(res.data[i]);
                         }
-                        console.log(res);
                     })
                     .catch((err)=>{
                         console.log(err);
@@ -64,25 +63,25 @@
                 const parentNode=document.getElementById(user.category)
                 const childHTML=`<li id=${user._id}> ${user.amount} - ${user.des}
                     - ${user.category} 
-                    <button onclick=deleteUser('${user._id}')>Delete</button>
+                    <button onclick=deleteUser('${user._id}','${user.category}')>Delete</button>
                     </li>`
-                parentNode.innerHTML =parentNode.innerHTML+childHTML
-
+                parentNode.innerHTML=parentNode.innerHTML+childHTML;
             }
             
-            function deleteUser(del){
-                axios.delete(`https://crudcrud.com/api/f24bf7e23fbf496fbd2ca53a4d38fa70/appoinmentData/${del}`)
+            function deleteUser(del,cat){
+                
+                axios.delete(`https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData/${del}`)
                 .then((res)=>{
-                    removeFromScreen(del);
+                    removeFromScreen(del,cat)
                 })
                 .catch((err)=>{
                     console.log(err);
                 })
                 // localStorage.removeItem(del)
             }
-            function removeFromScreen(screen){
-                const parentNode=document.getElementById(screen.category)
-                const childToBeRemoved=document.getElementById(screen)
+            function removeFromScreen(del,cat){
+                const parentNode=document.getElementById(cat)
+                const childToBeRemoved=document.getElementById(del)
                 parentNode.removeChild(childToBeRemoved)
             }
         </script>
