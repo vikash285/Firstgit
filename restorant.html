@@ -1,22 +1,22 @@
 </head>
 <body>
         <form onsubmit="signup(event)">
-            <label for="name" class="form-label">Choose Price:</label>
+            <label for="name" class="form-label">Selling Price:</label>
             <input type="number" class="form-control" id="amount" name="amount" required/>
-            <label for="name" class="form-label" >Choose Dish:</label>
+            <label for="name" class="form-label" >Product Name:</label>
             <input type="text" class="form-control" id="expense" name="expense" required/>
-            <label for="categories" class="form-label">Choose a Table:</label>
+            <label for="categories" class="form-label">Choose a Category:</label>
             <select name="category" id="categories" class="form-control">
-                <option value="Table1">Table1</option>
-                <option value="Table2">Table2</option>
-                <option value="Table3">Table3</option>
+                <option value="Electronic">Electronic</option>
+                <option value="Food">Food</option>
+                <option value="Skincare">Skincare</option>
             </select>
-            <button>Add to bill</button>
+            <button>Add Product</button>
         </form>
-        <ul id="listOfUsers"><h3>Orders</h3></ul>
-            <ul id="Table1"><h4>Table1</h4></ul>
-            <ul id="Table2"><h4>Table2</h4></ul>
-            <ul id="Table3"><h4>Table3</h4></ul>
+        <ul id="listOfUsers"><h3>Products</h3></ul>
+            <ul id="Electronic"><h4>Electronic Items</h4></ul>
+            <ul id="Food"><h4>Food Items</h4></ul>
+            <ul id="Skincare"><h4>Skincare Items</h4></ul>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
         <script>
             function signup(event){
@@ -30,7 +30,7 @@
                     des,
                     category
                 }
-                axios.post("https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData",obj)
+                axios.post("https://crudcrud.com/api/5a1640b3fd4848cb8bd4452842c8b570/appoinmentData",obj)
                 .then((res)=>{
                     showNewUserOnScreen(res.data);
                 })
@@ -43,7 +43,7 @@
             }
 
             window.addEventListener("DOMContentLoaded",()=>{
-                    axios.get("https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData")
+                    axios.get("https://crudcrud.com/api/5a1640b3fd4848cb8bd4452842c8b570/appoinmentData")
                     .then((res)=>{
                         for(var i=0;i<res.data.length;i++){
                             showNewUserOnScreen(res.data[i]);
@@ -63,14 +63,14 @@
                 const parentNode=document.getElementById(user.category)
                 const childHTML=`<li id=${user._id}> ${user.amount} - ${user.des}
                     - ${user.category} 
-                    <button onclick=deleteUser('${user._id}','${user.category}')>Delete</button>
+                    <button onclick=deleteUser('${user._id}','${user.category}')>Delete Order</button>
                     </li>`
                 parentNode.innerHTML=parentNode.innerHTML+childHTML;
             }
             
             function deleteUser(del,cat){
                 
-                axios.delete(`https://crudcrud.com/api/8b8e2599602748c1b129332eae4e2283/appoinmentData/${del}`)
+                axios.delete(`https://crudcrud.com/api/5a1640b3fd4848cb8bd4452842c8b570/appoinmentData/${del}`)
                 .then((res)=>{
                     removeFromScreen(del,cat)
                 })
