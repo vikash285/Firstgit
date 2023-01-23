@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+        <form action="#" onsubmit="signup(event)">
+            <label for="name">Unique Order ID:</label>
+            <input type="number" id="amount" name="amount" required/>
+            <label for="name" >Choose Price:</label>
+            <input type="number" id="expense" name="expense" required/>
+            <label for="description">Choose Dish:</label>
+            <input type="text" id="description" name="description" required/>
+            <label for="categories">Choose a Table:</label>
+            <select name="category" id="categories">
+                <option value="Table1">Table 1</option>
+                <option value="Table2">Table 2</option>
+                <option value="Table3">Table 3</option>
+            </select>
+            <button>Add to bill</button>
+        </form>
+        <h3>Orders</h3>
+        <h4>Table 1</h4>
+        <ul id="Table1"></ul>
+        <h4>Table 2</h4>
+        <ul id="Table2"></ul>
+        <h4>Table 3</h4>
+        <ul id="Table3"></ul>
+        <script>
+            function signup(event){
+                event.preventDefault();
+                const orderID=event.target.amount.value;
+                const expenseAmount=event.target.expense.value;
+                const description=event.target.description.value;
+                const category=event.target.category.value;
+
+                const obj={
+                    expenseAmount,
+                    description,
+                    category,
+                    orderID
+                }
+                localStorage.setItem(obj.orderID,JSON.
+                stringify(obj));
+                showNewUserOnScreen(obj);
+            }
+
+            Object.keys(localStorage).forEach((key)=>{
+                  const stringifiedDetails=localStorage.getItem(key)
+                  const destringifiedDetails=JSON.parse(stringifiedDetails)
+                    showNewUserOnScreen(destringifiedDetails)
+                });
+            function showNewUserOnScreen(user){
+                
+                document.getElementById('expense').value=''
+                document.getElementById('amount').value=''
+                document.getElementById('description').value=''
+                document.getElementById('categories').value=''
+
+                const parentNode=document.getElementById(user.category)
+                const childHTML=`<li id=${user.orderID}>${user.expenseAmount}
+                    - ${user.description} 
+                    <button onclick=deleteUser('${user.orderID}','${user.category}')>Delete Order</button>
+                    </li>`
+                parentNode.innerHTML =parentNode.innerHTML+childHTML
+            }
+            
+            function deleteUser(ID,Amount){
+                localStorage.removeItem(ID)
+                removeFromScreen(ID,Amount)
+            }
+            function removeFromScreen(ID,Amount){
+                const parentNode=document.getElementById(Amount)
+                const childToBeRemoved=document.getElementById(ID)
+                parentNode.removeChild(childToBeRemoved)
+            }
+        </script>
+</body>
+</html>
