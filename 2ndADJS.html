@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+        <form action="#" onsubmit="signup(event)">
+            <label for="name">Product ID:</label>
+            <input type="number" id="amount" name="amount" required/>
+            <label for="name" >Selling Price:</label>
+            <input type="number" id="expense" name="expense" required/>
+            <label for="categories">Product Name:</label>
+            <input type="text" id="categories" name="category" required/>
+            <button>Add Product</button>
+        </form>
+        <h2>Products</h2>
+        <ul id="listOfUsers"></ul>
+        <h4 id="worth">Total Value Worth of Products:</h4>
+        <script>
+            function signup(event){
+                event.preventDefault();
+                const orderID=event.target.amount.value;
+                const expenseAmount=event.target.expense.value;
+                const description=event.target.category.value;
+
+                const obj={
+                    expenseAmount,
+                    description,
+                    orderID
+                }
+                localStorage.setItem(obj.orderID,JSON.
+                stringify(obj));
+                showNewUserOnScreen(obj);
+            }
+
+            Object.keys(localStorage).forEach((key)=>{
+                  const stringifiedDetails=localStorage.getItem(key)
+                  const destringifiedDetails=JSON.parse(stringifiedDetails)
+                    showNewUserOnScreen(destringifiedDetails)
+                });
+            function showNewUserOnScreen(user){
+                
+                document.getElementById('expense').value=''
+                document.getElementById('amount').value=''
+                document.getElementById('categories').value=''
+
+                const parentNode=document.getElementById('listOfUsers')
+                const childHTML=`<li id=${user.orderID}>${user.expenseAmount}
+                    - ${user.description} 
+                    <button onclick=deleteUser('${user.orderID}','${user.expenseAmount}')>Delete Product</button>
+                    </li>`
+                parentNode.innerHTML =parentNode.innerHTML+childHTML
+
+                const parentNode1=document.getElementById('worth')
+                const childHTML1=`<h5 id=${user.orderID}>Rs ${user.expenseAmount}</h5>`
+                parentNode1.innerHTML =childHTML1
+            }
+            
+            function deleteUser(ID,Amount){
+                localStorage.removeItem(ID)
+                removeFromScreen(ID,Amount)
+            }
+            function removeFromScreen(ID,Amount){
+                const parentNode=document.getElementById('listOfUsers')
+                const childToBeRemoved=document.getElementById(ID)
+                parentNode.removeChild(childToBeRemoved)
+
+                const parentNode1=document.getElementById('worth')
+                const childHTML1=`<h5 id=${ID}>Rs ${Amount}</h5>`
+                parentNode1.innerHTML =childHTML1
+            }
+        </script>
+</body>
+</html>
