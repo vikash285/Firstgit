@@ -1,0 +1,111 @@
+<head>
+    <body>
+        <h1>Appoinment Booking App</h1>
+        <form onsubmit="toLocalStorage(event)">
+            <label for="username">Name:</label>
+            <input id="username" type="text" name="username" required>
+            <label for="emailId">Email:</label>
+            <input id="emailId" type="email" name="emailId" required>
+            <label for="phonenumber">Phonenumber:</label>
+            <input id="phonenumber" type="number" name="phonenumber" required>
+            <button>Submit</button>
+        </form>
+        <ul id="listOfUsers"></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
+        <script>
+            async function toLocalStorage(event) {
+                try {
+                event.preventDefault();
+                const name=event.target.username.value;
+                const email=event.target.emailId.value;
+                const phonenumber=event.target.phonenumber.value;
+                let obj = {
+                    name,
+                    email,
+                    phonenumber
+                }
+                const res = await axios.post("http://localhost:3000/user/add-user",obj)
+                await showNewUser(res.data.newUserDetail)
+                console.log(res.data.newUserDetail);
+            } catch(err) {
+                    document.body.innerHTML+="<h4>Something went wrong</h4>"
+                    console.log(err);
+                }
+                // localStorage.setItem(obj.email,JSON.stringify(obj));
+                // showNewUser(obj);
+            }
+
+             window.addEventListener("DOMContentLoaded",async()=>{
+                try{
+                    const res = await axios.get("http://localhost:3000/user/get-users")
+                        for(var i=0;i<res.data.allUsers.length;i++){
+                            showNewUser(res.data.allUsers[i]);
+                        }
+                    } catch (err) {
+                        console.log(err);
+                    }
+
+                //  const localStorageObj=localStorage;
+                //  const localStorageKeys=Object.keys(localStorageObj);
+
+                //  for ( var i=0;i<localStorageKeys.length;i++){
+                //     const key=localStorageKeys[i];
+                //     const userDetailsString=localStorageObj[key];
+                //     const userDetailsObj=JSON.parse(userDetailsString);
+                //     showNewUser(userDetailsObj);
+            //      }
+             })
+
+            function showNewUser(user){
+                try{
+                document.getElementById('username').value='';
+                document.getElementById('emailId').value='';
+                document.getElementById('phonenumber').value='';
+
+                const parentNode=document.getElementById('listOfUsers');
+                const childHTML=`<li id=${user.id}> ${user.name} - ${user.email} 
+                    <button onclick=editUserDetails('${user.email}','${user.name}','${user.id}')>Edit</button>
+                    <button onclick=deleteUser('${user.id}')>Delete User</button>
+                    </li>`
+                parentNode.innerHTML=parentNode.innerHTML+childHTML;
+                } catch(err) {
+                    console.log(err)
+                }
+            }
+            
+            function editUserDetails(emailId,name,userId){
+                try{
+                document.getElementById('emailId').value=emailId;
+                document.getElementById('username').value=name;
+
+                deleteUser(userId)
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            async function deleteUser(userId){
+                try{
+                await axios.delete(`http://localhost:3000/user/delete-user/${userId}`)
+                await removeUserFromScreen(userId);
+                } catch (err) {
+                    console.log(err);
+                }
+                // console.log(emailId);
+                // localStorage.removeItem(emailId);
+                // removeUserFromScreen(emailId);
+            }
+            function removeUserFromScreen(userId){
+                try{
+                const parentNode=document.getElementById('listOfUsers');
+                const childToBeDeleted=document.getElementById(userId);
+                if(childToBeDeleted){
+                    parentNode.removeChild(childToBeDeleted)
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            }
+        </script>
+    </body>
+</html>
