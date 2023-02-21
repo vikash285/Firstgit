@@ -8,9 +8,11 @@ async function logIn(event) {
             password: event.target.password.value
         }
 
-        const res = await axios.post("http://localhost:3000/user/login", loginDetails)
-        alert(res.data.message)
-
+        const res = await axios.post("http://localhost:3000/userApp/login", loginDetails)
+        
+            alert(res.data.message)
+            localStorage.setItem('token', res.data.token)
+            window.location.href = "../index.html"
     } catch (err) {
         document.body.innerHTML += `<div style="color:red;">${err.message}</div>`
     }

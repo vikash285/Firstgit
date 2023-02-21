@@ -7,8 +7,8 @@ async function addExpense(event) {
         description: event.target.description.value,
         category: event.target.category.value
        }
-
-       const res = await axios.post("http://localhost:3000/expense/addExpenses", expenseDetails)
+       const token = localStorage.getItem('token')
+       const res = await axios.post("http://localhost:3000/expense/addExpenses", expenseDetails, { headers: { "Authorization": token }})
        showNewUser(res.data.userExpense)
     } catch (err) {
         document.body.innerHTML += `<div style="color:red;">${err}</div>`
@@ -17,7 +17,8 @@ async function addExpense(event) {
 
 window.addEventListener("DOMContentLoaded",async()=>{
     try{
-        const res = await axios.get("http://localhost:3000/expense/getExpenses")
+        const token = localStorage.getItem('token')
+        const res = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { "Authorization": token }})
             for(var i=0;i<res.data.allExpenses.length;i++){
                 showNewUser(res.data.allExpenses[i]);
             }
@@ -44,7 +45,8 @@ function showNewUser(user){
 
 async function deleteUser(userId){
     try{
-    await axios.delete(`http://localhost:3000/expense/deleteExpense/${userId}`)
+        const token = localStorage.getItem('token')
+    await axios.delete(`http://localhost:3000/expense/deleteExpense/${userId}`, { headers: { "Authorization": token }})
     removeUserFromScreen(userId);
     } catch (err) {
         console.log(err);
