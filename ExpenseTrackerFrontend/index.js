@@ -64,3 +64,26 @@ function removeUserFromScreen(userId){
     console.log(err);
 }
 }
+
+document.getElementById('rzp-button1').onclick = async function (event) {
+    const token = localStorage.getItem('token')
+    const res = await axios.get('http://localhost:3000/purchase/premiumMemberShip', { headers: { 'Authorization': token }})
+    var options = {
+        "key": res.data.key_id,
+        "order_id": res.data.order.id,
+        "handler": async function (res) {
+            await axios.post('http://localhost:3000/purchase/updateTransactionStatus', {
+                order_id: options.order_id,
+                payment_id: res.razorpay_payment_id
+            }, { headers: {'Authorization': token }})
+            alert('You are a premium user now!')
+        }
+    }
+    const rzp1 = new Razorpay(options)
+    rzp1.open()
+    event.preventDefault()
+
+    rzp1.on('payment.failed', function (res) {
+        alert('Something went wrong!')
+    })
+}
