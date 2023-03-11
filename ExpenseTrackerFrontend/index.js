@@ -15,23 +15,6 @@ async function addExpense(event) {
     }
 }
 
-function showLeaderBoard () {
-    const inputElement = document.createElement('input')
-    inputElement.type = 'button'
-    inputElement.value = 'Show Leaderboard'
-    inputElement.onclick = async () => {
-        const token = localStorage.getItem('token')
-        const userLeaderBoardArray = await axios.get("http://localhost:3000/premium/showLeaderBoard", { headers: { "Authorization": token }})
-
-        var leaderboardEle = document.getElementById('leaderboard')
-        leaderboardEle.innerHTML += '<h1> Leader Board </h1>'
-        userLeaderBoardArray.data.forEach( (userDetails) => {
-            leaderboardEle.innerHTML += `<li> Name - ${userDetails.name}, Total Expense - ${userDetails.total_cost || 0}`
-        })
-        document.getElementById('msg').appendChild(inputElement)
-    }
-}
-
 function showPremiumUserMessage () {
     document.getElementById('rzp-button1').style.visibility = 'hidden'
     document.getElementById('msg').innerHTML = 'You are Premium User'
@@ -73,7 +56,7 @@ function showNewUser(user){
 
     const parentNode=document.getElementById('list');
     const childHTML=`<li id=${user.id}> ${user.amount} - ${user.description} - ${user.category}
-        <button onclick=deleteUser('${user.id}')>Delete User</button>
+        <button onclick=deleteUser('${user.id}','${user.amount}')>Delete User</button>
         </li>`
     parentNode.innerHTML=parentNode.innerHTML+childHTML
     } catch(err) {
@@ -81,10 +64,10 @@ function showNewUser(user){
     }
 }
 
-async function deleteUser(userId){
+async function deleteUser(userId, amount){
     try{
         const token = localStorage.getItem('token')
-    await axios.delete(`http://localhost:3000/expense/deleteExpense/${userId}`, { headers: { "Authorization": token }})
+    await axios.delete(`http://localhost:3000/expense/deleteExpense/${userId}/${amount}`, { headers: { "Authorization": token }})
     removeUserFromScreen(userId);
     } catch (err) {
         console.log(err);
@@ -101,6 +84,45 @@ function removeUserFromScreen(userId){
 } catch (err) {
     console.log(err);
 }
+}
+
+function showLeaderBoard () {
+    const inputElement = document.createElement("input")
+    inputElement.type = "button"
+    inputElement.value = 'Show Leaderboard'
+    
+    inputElement.onclick = async () => {
+        const token = localStorage.getItem('token')
+        const userLeaderBoardArray = await axios.get("http://localhost:3000/premium/showLeaderBoard", { headers: { "Authorization": token }})
+
+        var leaderboardEle = document.getElementById('leaderboard')
+        leaderboardEle.innerHTML += '<h1> Leader Board </h1>'
+        userLeaderBoardArray.data.forEach( (userDetails) => {
+            leaderboardEle.innerHTML += `<li> Name - ${userDetails.name}, Total Expense - ${userDetails.totalExpenses || 0}`
+        })
+    }
+    document.getElementById('msg').appendChild(inputElement)
+}
+
+async function download(){
+    try {
+        const token = localStorage.getItem('token')
+        const response = await axios.get('http://localhost:3000/userApp/download', { headers: {"Authorization" : token} })
+
+        if(response.status === 201){
+            //the bcakend is essentially sending a download link
+            //  which if we open in browser, the file would download
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+
+    } catch (err) {
+        showError(err)
+    }
 }
 
 document.getElementById('rzp-button1').onclick = async function (event) {
