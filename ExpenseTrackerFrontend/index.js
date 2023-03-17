@@ -107,13 +107,14 @@ function showLeaderBoard () {
 async function download(){
     try {
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/userApp/download', { headers: {"Authorization" : token} })
+        const response = await axios.get('http://localhost:3000/expense/download', { headers: {"Authorization" : token} })
 
-        if(response.status === 201){
+        addUrl(response.data.fileURL)
+        if(response.status === 200){
             //the bcakend is essentially sending a download link
             //  which if we open in browser, the file would download
             var a = document.createElement("a");
-            a.href = response.data.fileUrl;
+            a.href = response.data.fileURL;
             a.download = 'myexpense.csv';
             a.click();
         } else {
@@ -121,8 +122,39 @@ async function download(){
         }
 
     } catch (err) {
-        showError(err)
+        console.log(err)
     }
+}
+
+async function addUrl(fileUrl) {
+try{
+    const urlDetails = {
+        url: fileUrl
+       }
+    const token = localStorage.getItem('token')
+    const res = await axios.post("http://localhost:3000/expense/addUrls", urlDetails, { headers: { "Authorization": token }})
+    showUrl(res.data.fileURL)
+} catch (err) {
+    console.log(err)
+}
+}
+
+function showUrl(url) {
+    const inputElement = document.createElement("input")
+    inputElement.type = "button"
+    inputElement.value = 'Show Download History'
+    
+    inputElement.onclick = async () => {
+        const token = localStorage.getItem('token')
+        const userLeaderBoardArray = await axios.get("http://localhost:3000/expense/getUrls", { headers: { "Authorization": token }})
+        console.log(userLeaderBoardArray)
+        var leaderboardEle = document.getElementById('url')
+        leaderboardEle.innerHTML += '<h1> Download History </h1>'
+        userLeaderBoardArray.data.allUrls.forEach((fileURL) => {
+            leaderboardEle.innerHTML += `<li> URL - ${fileURL.url}, Time - ${fileURL.createdAt}`
+        })
+    }
+    document.getElementById('msg').appendChild(inputElement)
 }
 
 document.getElementById('rzp-button1').onclick = async function (event) {
