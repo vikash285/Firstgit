@@ -39,14 +39,61 @@ window.addEventListener("DOMContentLoaded",async()=>{
             showPremiumUserMessage()
             showLeaderBoard()
         }
-        const res = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { "Authorization": token }})
+
+        const page = 1
+        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { "Authorization": token }})
             for(var i=0;i<res.data.allExpenses.length;i++){
                 showNewUser(res.data.allExpenses[i]);
             }
+            showPagination(res.data)
         } catch (err) {
             console.log(err);
         }
 })
+
+function showPagination({
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage
+}) {
+     const pagination = document.getElementById('container')
+     pagination.innerHTML = ''
+
+     if(hasPreviousPage) {
+        const btn2 = document.createElement('button')
+        btn2.innerHTML = previousPage
+        btn2.addEventListener('click', async() => await getExpenses(previousPage))
+        pagination.appendChild(btn2)
+     }
+    
+        const btn1 = document.createElement('button')
+        btn1.innerHTML = `<h3>${currentPage}</h3>`
+        btn1.addEventListener('click', async() => await getExpenses(currentPage))
+        pagination.appendChild(btn1)
+    
+     if(hasNextPage) {
+        const btn3 = document.createElement('button')
+        btn3.innerHTML = nextPage
+        btn3.addEventListener('click', async() => await getExpenses(nextPage))
+        pagination.appendChild(btn3)
+     }
+}
+
+async function getExpenses(page) {
+    try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { "Authorization": token }})
+        for(var i=0;i<res.data.allExpenses.length;i++){
+            showNewUser(res.data.allExpenses[i]);
+        }
+        showPagination(res.data)
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 function showNewUser(user){
     try{
