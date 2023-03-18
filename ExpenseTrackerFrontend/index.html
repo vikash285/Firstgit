@@ -27,6 +27,11 @@
 
       <h1>Expenses</h1>
     <ul id="list"></ul>
+    <div class="container" id="container"></div>
+    <form onsubmit="setLimit(event)">
+    <input type="number" id="range" name="range">
+    <button>Set Limit</button>
+</form>
     <button onclick="download()" id="downloadExpense">Download File</button>
     <ul id="url"></ul>
     <ul id="leaderboard"></ul>

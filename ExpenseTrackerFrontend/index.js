@@ -1,6 +1,6 @@
 async function addExpense(event) {
     try {
-       event.preventDefault(event)
+       event.preventDefault()
 
        const expenseDetails = {
         amount: event.target.amount.value,
@@ -12,6 +12,16 @@ async function addExpense(event) {
        showNewUser(res.data.userExpense)
     } catch (err) {
         document.body.innerHTML += `<div style="color:red;">${err}</div>`
+    }
+}
+
+function setLimit(event) {
+    try {
+          event.preventDefault()
+          const limit = event.target.range.value
+          localStorage.setItem('keyLimit', limit)
+    } catch (err) {
+        console.log(err)
     }
 }
 
@@ -41,7 +51,8 @@ window.addEventListener("DOMContentLoaded",async()=>{
         }
 
         const page = 1
-        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { "Authorization": token }})
+        const limit = localStorage.getItem('keyLimit')
+        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { "Authorization": token }})
             for(var i=0;i<res.data.allExpenses.length;i++){
                 showNewUser(res.data.allExpenses[i]);
             }
@@ -57,7 +68,8 @@ function showPagination({
     nextPage,
     hasPreviousPage,
     previousPage,
-    lastPage
+    lastPage,
+    limit
 }) {
      const pagination = document.getElementById('container')
      pagination.innerHTML = ''
@@ -65,27 +77,27 @@ function showPagination({
      if(hasPreviousPage) {
         const btn2 = document.createElement('button')
         btn2.innerHTML = previousPage
-        btn2.addEventListener('click', async() => await getExpenses(previousPage))
+        btn2.addEventListener('click', async() => await getExpenses(previousPage, limit))
         pagination.appendChild(btn2)
      }
     
         const btn1 = document.createElement('button')
         btn1.innerHTML = `<h3>${currentPage}</h3>`
-        btn1.addEventListener('click', async() => await getExpenses(currentPage))
+        btn1.addEventListener('click', async() => await getExpenses(currentPage, limit))
         pagination.appendChild(btn1)
     
      if(hasNextPage) {
         const btn3 = document.createElement('button')
         btn3.innerHTML = nextPage
-        btn3.addEventListener('click', async() => await getExpenses(nextPage))
+        btn3.addEventListener('click', async() => await getExpenses(nextPage, limit))
         pagination.appendChild(btn3)
      }
 }
 
-async function getExpenses(page) {
+async function getExpenses(page, limit) {
     try {
         const token = localStorage.getItem('token')
-        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { "Authorization": token }})
+        const res = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { "Authorization": token }})
         for(var i=0;i<res.data.allExpenses.length;i++){
             showNewUser(res.data.allExpenses[i]);
         }
